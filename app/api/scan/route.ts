@@ -14,8 +14,7 @@ export async function POST(request: NextRequest) {
     const ocrText = formData.get('ocrText') as string | null;
 
     // Get OpenRouter API key from environment
-    const openrouterApiKey = process.env.OPENROUTER_API_KEY || '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';
-
+    const openrouterApiKey = process.env.OPENROUTER_API_KEY
     // Strategy 1: If OCR text is provided (from client-side), parse it directly
     if (ocrText && ocrText.trim().length > 0) {
       if (!openrouterApiKey) {

@@ -7,7 +7,7 @@ interface ProductResultsData extends ProductData {
 }
 
 interface ProductResultsProps {
-  data: ProductResultsData;
+  data: ProductResultsData | Partial<ProductResultsData>;
   isLoading?: boolean;
 }
 

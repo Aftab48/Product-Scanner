@@ -229,7 +229,7 @@ export default function Home() {
         {/* Loading State */}
         {isScanning && (
           <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <ProductResults data={{}} isLoading={true} />
+            <ProductResults data={{} as ProductData} isLoading={true} />
             {ocrProgress > 0 && (
               <div className="mt-4">
                 <div className="flex justify-between text-sm text-gray-600 mb-2">
