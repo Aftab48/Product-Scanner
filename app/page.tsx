@@ -95,8 +95,8 @@ export default function Home() {
                 setError(errorData.message);
               }
               // Still try to show raw OCR text if available
-              if (result && result.data && result.data.rawText) {
-                setProductData(result.data);
+              if (errorData.data && errorData.data.rawText) {
+                setProductData(errorData.data);
               }
               return;
             }
