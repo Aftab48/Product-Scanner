@@ -1,0 +1,57 @@
+2025-12-11 07:36:27.111 [info] Parsing OCR text from client...
+2025-12-11 07:36:27.214 [error] Error parsing product text: Error: 401 User not found.
+    at e5.generate (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:1:2613)
+    at nE.makeStatusError (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:8:52836)
+    at nE.makeRequest (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:8:56271)
+    at async f3 (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:79:79)
+    at async mS (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:89:53419)
+    at async g (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:89:58403) {
+  status: 401,
+  headers: Headers {
+    date: 'Thu, 11 Dec 2025 07:36:27 GMT',
+    'content-type': 'application/json',
+    'transfer-encoding': 'chunked',
+    connection: 'keep-alive',
+    'cf-ray': '9ac34fa18ee71779-IAD',
+    'access-control-allow-origin': '*',
+    vary: 'Accept-Encoding',
+    'permissions-policy': 'payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")',
+    'referrer-policy': 'no-referrer, strict-origin-when-cross-origin',
+    'x-content-type-options': 'nosniff',
+    server: 'cloudflare'
+  },
+  requestID: null,
+  error: [Object],
+  code: 401,
+  param: undefined,
+  type: undefined
+}
+
+
+Error parsing product text: Error: 401 User not found.
+    at e5.generate (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:1:2613)
+    at nE.makeStatusError (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:8:52836)
+    at nE.makeRequest (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:8:56271)
+    at async f3 (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:79:79)
+    at async mS (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:89:53419)
+    at async g (.next/server/chunks/718e3_next_dist_esm_build_templates_app-route_2d52194d.js:89:58403) {
+  status: 401,
+  headers: Headers {
+    date: 'Thu, 11 Dec 2025 07:36:27 GMT',
+    'content-type': 'application/json',
+    'transfer-encoding': 'chunked',
+    connection: 'keep-alive',
+    'cf-ray': '9ac34fa18ee71779-IAD',
+    'access-control-allow-origin': '*',
+    vary: 'Accept-Encoding',
+    'permissions-policy': 'payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")',
+    'referrer-policy': 'no-referrer, strict-origin-when-cross-origin',
+    'x-content-type-options': 'nosniff',
+    server: 'cloudflare'
+  },
+  requestID: null,
+  error: [Object],
+  code: 401,
+  param: undefined,
+  type: undefined
+}

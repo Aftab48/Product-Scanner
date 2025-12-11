@@ -81,16 +81,27 @@ export default function Home() {
             if (result.success) {
               setOcrProgress(100);
               setProductData(result.data);
-              // Show warning if quota exceeded
-              if (result.code === 'quota_exceeded' && result.message) {
+              // Show warning if quota exceeded or auth failed
+              if ((result.code === 'quota_exceeded' || result.code === 'auth_failed' || result.code === 'parsing_failed') && result.message) {
                 setError(result.message);
               }
               return;
             }
           } else {
             const errorData = await response.json();
-            // If quota exceeded, fall through to Vision API
-            if (errorData.code !== 'quota_exceeded') {
+            // If quota exceeded or auth failed, show message but don't throw
+            if (errorData.code === 'quota_exceeded' || errorData.code === 'auth_failed') {
+              if (errorData.message) {
+                setError(errorData.message);
+              }
+              // Still try to show raw OCR text if available
+              if (result && result.data && result.data.rawText) {
+                setProductData(result.data);
+              }
+              return;
+            }
+            // For other errors, fall through to Vision API
+            if (errorData.code !== 'quota_exceeded' && errorData.code !== 'auth_failed') {
               throw new Error(errorData.error || 'Failed to parse product data');
             }
           }
@@ -112,6 +123,11 @@ export default function Home() {
 
       if (!response.ok) {
         const errorData = await response.json();
+        // Handle authentication errors gracefully
+        if (errorData.code === 'auth_failed') {
+          setError('Gemini API authentication failed. Please check your API key configuration.');
+          return;
+        }
         throw new Error(errorData.error || 'Failed to scan product');
       }
 

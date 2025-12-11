@@ -31,13 +31,22 @@ cd ai-product-scanner
 pnpm install
 ```
 
-3. Set up environment variables (optional):
+3. Set up environment variables:
 ```bash
-# Create .env.local file
-echo "OPENROUTER_API_KEY=your_openrouter_api_key_here" > .env.local
+# Create .env.local file (no quotes needed)
+echo GEMINI_API_KEY=your_gemini_api_key_here > .env.local
 ```
 
-**Note:** The app uses OpenRouter with GPT-4o mini by default. An API key is already configured, but you can override it by setting `OPENROUTER_API_KEY` in your `.env.local` file. Get your API key from [OpenRouter](https://openrouter.ai/keys).
+Or manually create `.env.local` file with:
+```
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+**Note:** 
+- No quotes are needed around the API key value
+- Get your API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+- For production (Vercel), add `GEMINI_API_KEY` in your project's environment variables settings
+- The app uses Google Gemini 1.5 Flash model for AI parsing
 
 ### Running the Development Server
 
@@ -64,7 +73,7 @@ pnpm start
 4. **AI Parsing**: Extracted text is sent to server and parsed using OpenAI GPT-4 to extract structured product data
 5. **Results Display**: Product information is displayed in a clean, organized format
 
-**Note**: OpenRouter API key is used for AI parsing (default key is configured). The app will use client-side OCR first, then send the extracted text to the server for AI parsing via OpenRouter's GPT-4o mini. If OCR fails or quota is exceeded, it falls back to OpenRouter Vision API.
+**Note**: Google Gemini API key is used for AI parsing. The app will use client-side OCR first, then send the extracted text to the server for AI parsing via Google Gemini 1.5 Flash. If OCR fails or quota is exceeded, it falls back to Gemini Vision API.
 
 ## Mobile Optimizations
 
@@ -98,12 +107,12 @@ components/
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Styling
 - **Tesseract.js** - OCR text extraction
-- **OpenRouter** - GPT-4o mini for AI parsing (via OpenAI-compatible API)
+- **Google Gemini** - Gemini 1.5 Flash for AI parsing and vision
 - **browser-image-compression** - Client-side image compression
 
 ## Environment Variables
 
-- `OPENROUTER_API_KEY` - Your OpenRouter API key (optional, defaults to configured key)
+- `GEMINI_API_KEY` - Your Google Gemini API key (required for AI parsing)
 
 ## License
 

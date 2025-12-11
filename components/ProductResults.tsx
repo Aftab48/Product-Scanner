@@ -47,7 +47,7 @@ export default function ProductResults({ data, isLoading }: ProductResultsProps)
         <div className="bg-yellow-600 text-white px-6 py-4">
           <h2 className="text-xl font-semibold">Raw OCR Text</h2>
           <p className="text-sm mt-1 opacity-90">
-            OpenRouter API quota exceeded. Showing raw extracted text.
+            AI parsing unavailable. Showing raw extracted text.
           </p>
         </div>
         <div className="p-6">

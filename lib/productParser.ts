@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { z } from 'zod';
 
 // Helper function to flatten nested data structure from AI
@@ -115,23 +115,19 @@ export type ProductData = z.infer<typeof ProductSchema>;
 
 
 /**
- * Parse OCR text using OpenRouter (GPT-4o mini) to extract structured product information
+ * Parse OCR text using Google Gemini to extract structured product information
  */
 export async function parseProductText(
   ocrText: string,
   apiKey?: string
 ): Promise<ProductData> {
   if (!apiKey) {
-    throw new Error('OpenRouter API key is required');
+    throw new Error('Gemini API key is required');
   }
 
-  const openai = new OpenAI({
-    apiKey: apiKey,
-    baseURL: 'https://openrouter.ai/api/v1',
-    defaultHeaders: {
-      'HTTP-Referer': typeof window !== 'undefined' ? window.location.origin : 'https://localhost:3000',
-    },
-  });
+  const genAI = new GoogleGenerativeAI(apiKey);
+  // Try gemini-1.5-flash-001 (versioned model name)
+  const model = genAI.getGenerativeModel({ model: "gemini-3-pro-preview" });
 
   const prompt = `Extract comprehensive product information from the following text extracted from a product label. 
 Return a JSON object with the following fields (use null for missing values):
@@ -188,26 +184,25 @@ ${ocrText}
 Return ONLY valid JSON, no additional text or markdown formatting.`;
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'openai/gpt-4o-mini', // OpenRouter model format
-      messages: [
-        {
-          role: 'system',
-          content:
-            'You are a product information extraction assistant. Extract structured data from product labels and return valid JSON only.',
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.3,
+    const systemInstruction = 'You are a product information extraction assistant. Extract structured data from product labels and return valid JSON only.';
+    
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      systemInstruction: systemInstruction,
+      generationConfig: {
+        temperature: 0.3,
+        responseMimeType: 'application/json',
+      },
     });
 
-    const content = response.choices[0]?.message?.content;
-    if (!content) {
-      throw new Error('No response from OpenRouter');
+    const response = result.response;
+    const content = response.text();
+    if (!content || content.trim().length === 0) {
+      console.error('Empty response from Gemini:', {
+        candidates: response.candidates,
+        promptFeedback: response.promptFeedback,
+      });
+      throw new Error('No response from Gemini - empty content received');
     }
 
     // Parse JSON response
@@ -282,7 +277,7 @@ Return ONLY valid JSON, no additional text or markdown formatting.`;
 }
 
 /**
- * Alternative: Parse using OpenRouter Vision API directly from image
+ * Alternative: Parse using Google Gemini Vision API directly from image
  * This can be used as a fallback or primary method
  */
 export async function parseProductImage(
@@ -291,32 +286,14 @@ export async function parseProductImage(
   apiKey?: string
 ): Promise<ProductData> {
   if (!apiKey) {
-    throw new Error('OpenRouter API key is required');
+    throw new Error('Gemini API key is required');
   }
 
-  const openai = new OpenAI({
-    apiKey: apiKey,
-    baseURL: 'https://openrouter.ai/api/v1',
-    defaultHeaders: {
-      'HTTP-Referer': typeof window !== 'undefined' ? window.location.origin : 'https://localhost:3000',
-    },
-  });
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: 'gemini-3-pro-preview' });
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'openai/gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content:
-            'You are a product information extraction assistant. Analyze product label images and extract structured data. Return valid JSON only.',
-        },
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: `Extract comprehensive product information from this product label image. 
+    const prompt = `Extract comprehensive product information from this product label image. 
 Return a JSON object with ALL available information including:
 - Basic: name, company, manufacturer, trademark, barcode, netWeight, mrp, price
 - Dates: expiryDate, bestBefore, manufacturingDate, batchNumber
@@ -326,25 +303,40 @@ Return a JSON object with ALL available information including:
 - Contact: consumerContact object (phone, email, address, website)
 - Other: otherDetails (object)
 
-Extract ALL visible information including nutritional facts, addresses, contact details, and regulatory information. Use null for missing values. Return ONLY valid JSON.`,
-            },
+Extract ALL visible information including nutritional facts, addresses, contact details, and regulatory information. Use null for missing values. Return ONLY valid JSON.`;
+
+    const systemInstruction = 'You are a product information extraction assistant. Analyze product label images and extract structured data. Return valid JSON only.';
+
+    const result = await model.generateContent({
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            { text: prompt },
             {
-              type: 'image_url',
-              image_url: {
-                url: `data:${mimeType};base64,${imageBase64}`,
+              inlineData: {
+                data: imageBase64,
+                mimeType: mimeType,
               },
             },
           ],
         },
       ],
-      response_format: { type: 'json_object' },
-      temperature: 0.3,
-      max_tokens: 1000,
+      systemInstruction: systemInstruction,
+      generationConfig: {
+        temperature: 0.3,
+        responseMimeType: 'application/json',
+      },
     });
 
-    const content = response.choices[0]?.message?.content;
-    if (!content) {
-      throw new Error('No response from OpenRouter');
+    const response = result.response;
+    const content = response.text();
+    if (!content || content.trim().length === 0) {
+      console.error('Empty response from Gemini:', {
+        candidates: response.candidates,
+        promptFeedback: response.promptFeedback,
+      });
+      throw new Error('No response from Gemini - empty content received');
     }
 
     const parsed = JSON.parse(content);

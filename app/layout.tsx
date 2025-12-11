@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -15,18 +15,19 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AI Product Scanner - Scan Product Labels Instantly",
   description: "Lightweight AI-powered product scanner that extracts product details from labels. Works on mobile devices.",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
-  themeColor: "#3b82f6",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "Product Scanner",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#3b82f6",
 };
 
 export default function RootLayout({
